@@ -124,41 +124,6 @@ someService.flatMap { someVal =>
 (someO orElse otherO orElse).getOrElse( ... )
 ```
 
-При использовании функций в инфиксной нотации, если их ≥ 3, то то все записываются на новой строчке, сама функция остается в конце строки, а все применяемые значения выравниваются по ширине, как равные!
-Примеры:
-```scala
-// Плохо
-def update(noteId: ObjectId) = (
-    authUtils.authenticateAction()
-    andThen authUtils.noteAction(noteId)
-    andThen canModifyNote
-) { request => ...
-
-// Хорошо
-def update(noteId: ObjectId) = (
-    authUtils.authenticateAction() andThen
-    authUtils.noteAction(noteId) andThen
-    canModifyNote
-) { request => ...
-```
-```scala
-// Плохо
-(
-	Reads.pure(new ObjectId) and
-	    Reads.pure(userId) and
-	    (__ \ "message_id").readNullable[String] and
-	    Reads.pure(false)
-) (SomeModel.apply _)
-
-// Хорошо
-(
-	Reads.pure(new ObjectId) and
-	Reads.pure(userId) and
-	(__ \ "message_id").readNullable[String] and
-	Reads.pure(false)
-) (SomeModel.apply _)
-```
-
 При использовании конструкции `if (...) { ... } else { ... }` фигурные скобки ставятся всегда, если только это не присваивание и все умещается на одну строку:
 ```scala
 val noteEvent = if (note.deleted) Note.SOCKET_ADD_EVENT else Note.SOCKET_UPDATE_EVENT
@@ -197,6 +162,54 @@ val cinemaIds:List[Int]
 
 // Хорошо
 val cinemaIds: List[Int]
+```
+
+При записи нескольких переменных подряд не нужно выравнивать присваивания по ширине:
+```scala
+// Плохо
+val MAX_LENGTH: Int     = 600
+val SOCKET_ADD_EVENT    = "note_added"
+val SOCKET_UPDATE_EVENT = "note_updated"
+
+// Хорошо
+val MAX_LENGTH: Int = 600
+val SOCKET_ADD_EVENT = "note_added"
+val SOCKET_UPDATE_EVENT = "note_updated"
+```
+
+При использовании функций в инфиксной нотации, если их ≥ 3, то то все записываются на новой строчке, сама функция остается в конце строки, а все применяемые значения выравниваются по ширине, как равные!
+Примеры:
+```scala
+// Плохо
+def update(noteId: ObjectId) = (
+    authUtils.authenticateAction()
+    andThen authUtils.noteAction(noteId)
+    andThen canModifyNote
+) { request => ...
+
+// Хорошо
+def update(noteId: ObjectId) = (
+    authUtils.authenticateAction() andThen
+    authUtils.noteAction(noteId) andThen
+    canModifyNote
+) { request => ...
+```
+```scala
+// Плохо
+(
+	Reads.pure(new ObjectId) and
+	    Reads.pure(userId) and
+	    (__ \ "message_id").readNullable[String] and
+	    Reads.pure(false)
+) (SomeModel.apply _)
+
+// Хорошо
+(
+	Reads.pure(new ObjectId) and
+	Reads.pure(userId) and
+	(__ \ "message_id").readNullable[String] and
+	Reads.pure(false)
+) (SomeModel.apply _)
 ```
 
 ##  Вызовы функций
